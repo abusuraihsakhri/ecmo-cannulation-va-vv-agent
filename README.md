@@ -18,7 +18,7 @@
 
 ## 📖 What It Does
 
-**ECMO Cannulation Va Vv Agent** is an advanced analytical and computational platform implementing VA/VV ECMO Membrane Pressure Drop & Recirculation Tracker.
+**ECMO Cannulation Va Vv Agent** is an advanced analytical and computational platform implementing VA/VV ECMO Membrane Pressure Drop & Recirculation Tracker. It provides multi-agent consensus evaluation, cryptographic audit trails, and zero-PHI outbound protection for clinical decision support.
 
 ---
 
@@ -37,25 +37,43 @@
 
 ## 💻 CLI Quickstart & Usage
 
-### 1. Guided Interactive Mode
+### Installation
 ```bash
-python cli.py
+pip install -e .
 ```
 
-### 2. Direct Parameterized Evaluation
+### 1. Run Single Audit
 ```bash
-python cli.py --task-id <value> --target <value> --primary <value> --secondary <value>
+python cli.py audit --task-id TASK-001 --target KEY-01 --primary 28.5 --secondary 14.2
+```
+
+### 2. Chat with Supervisor
+```bash
+python cli.py chat "What is the system status?"
+```
+
+### 3. Batch Process CSV
+```bash
+python cli.py batch -i sample.csv -o results.csv
+```
+
+### 4. Verify Audit Trail
+```bash
+python cli.py verify-audit
+```
+
+### 5. Launch REST API Server
+```bash
+python cli.py serve --host 127.0.0.1 --port 8000
 ```
 
 ### Parameter Reference
-- `--task-id`: Specifies input measurement or parameter value.
-- `--target`: Specifies input measurement or parameter value.
-- `--primary`: Specifies input measurement or parameter value.
-- `--secondary`: Specifies input measurement or parameter value.
-- `--critical`: Specifies input measurement or parameter value.
-- `--status`: Specifies input measurement or parameter value.
-- `--input`: Specifies input measurement or parameter value.
-- `--output`: Specifies input measurement or parameter value.
+- `--task-id`: Unique task/case identifier
+- `--target`: Target entity or specimen identifier
+- `--primary`: Primary measurement value (float)
+- `--secondary`: Secondary measurement value (float)
+- `--critical`: Flag for emergency escalation
+- `--status`: Status descriptor (e.g., NOMINAL, DISCORDANT)
 
 ### Input Data Schema
 
@@ -72,11 +90,24 @@ python cli.py --task-id <value> --target <value> --primary <value> --secondary <
 
 ## 🛡️ Security & Enterprise Architecture
 
-* **Zero-PHI Outbound Interceptor:** Active AST and regex inspection blocking SSNs, MRNs, phone numbers, and patient identifiers.
+* **Zero-PHI Outbound Interceptor:** Active regex inspection blocking SSNs, MRNs, phone numbers, and patient identifiers.
 * **Tamper-Evident HMAC-SHA256 Audit Trail:** Chained, cryptographically signed logs for every evaluation and state transition.
 * **Air-Gapped LLM Reasoning Adapter:** Agnostic integration for local Ollama instances (`llama3`, `mistral`), Claude 3.5 Sonnet, GPT-4o, and deterministic test mocks.
 * **Active Learning Bayesian Calibration:** Dynamic tracker updating worker reliability weights and monitoring Brier calibration drift.
-* **FastAPI & Prometheus Telemetry:** Exposes OpenAPI 3.1 REST endpoints and operational Prometheus metrics (`/metrics`).
+* **FastAPI & Prometheus Telemetry:** Exposes OpenAPI 3.1 REST endpoints and operational Prometheus metrics (`/metrics` and `/metrics/prometheus`).
+
+### Security Configuration
+
+Set a strong random key for production:
+```bash
+# Copy the example env file
+cp .env.example .env
+
+# Generate a strong key
+python -c "import secrets; print(secrets.token_hex(32))"
+
+# Edit .env and set AUDIT_SECRET_KEY
+```
 
 ---
 
@@ -91,14 +122,58 @@ pytest -v
 Execute high-throughput batch simulation benchmarks:
 
 ```bash
-python simulator.py --tasks 1000 --concurrency 8
+python simulator.py 1000
 ```
 
 ---
 
 ## 🐳 Container Deployment
 
+### Docker
 ```bash
 docker build -t ecmo-cannulation-va-vv-agent .
-docker run -p 8000:8000 ecmo-cannulation-va-vv-agent
+docker run -p 8000:8000 -e AUDIT_SECRET_KEY=your-secret-key ecmo-cannulation-va-vv-agent
+```
+
+### Docker Compose
+```bash
+# Copy and configure environment
+cp .env.example .env
+# Edit .env with your AUDIT_SECRET_KEY
+
+# Launch
+docker-compose up -d
+```
+
+---
+
+## 📁 Project Structure
+
+```
+ecmo-cannulation-va-vv-agent/
+├── agents/                    # Core agent package
+│   ├── api.py                 # FastAPI REST server
+│   ├── base.py                # Security, PHI guard, audit trail
+│   ├── models.py              # Pydantic data models
+│   ├── supervisor.py          # Multi-agent orchestrator
+│   ├── workers.py             # Specialized evaluation workers
+│   ├── metrics.py             # Prometheus metrics collector
+│   ├── learning.py            # Bayesian calibration engine
+│   ├── llm_factory.py         # LLM provider factory
+│   └── streamer.py            # WebSocket telemetry broadcaster
+├── ecmo_cannulation_va_vv_agent/  # Clinical agent package
+│   ├── agents.py              # Clinical coordinator & sub-agents
+│   ├── engine.py              # Clinical algorithmic engine
+│   ├── models.py              # Clinical data models
+│   ├── server.py              # FastAPI server factory
+│   └── cli.py                 # Clinical CLI
+├── tests/                     # Test suite
+├── cli.py                     # Main CLI entry point
+├── ecmo_sentinel.py           # Standalone ECMO sentinel module
+├── simulator.py               # High-throughput simulation
+├── enrichment.py              # Domain enrichment engines
+├── web/index.html             # Operations console
+├── Dockerfile                 # Container build
+├── docker-compose.yml         # Container orchestration
+└── pyproject.toml             # Project configuration
 ```
