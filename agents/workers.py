@@ -1,7 +1,7 @@
 """
 Specialized Domain Worker Agents for Ecmo Cannulation Va Vv Agent.
 Domain: Cardiology & Intensive Care Systems
-Standard: AHA/ACC Guidelines / Surviving Sepsis Campaign
+Scope: Unvalidated illustrative thresholds, not patient-care actions
 """
 import uuid
 from typing import Dict, Any, List, Optional
