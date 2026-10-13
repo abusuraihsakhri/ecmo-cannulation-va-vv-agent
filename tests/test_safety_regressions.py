@@ -37,13 +37,9 @@ def test_nonfinite_metrics_rejected(value):
         ClinicalCasePayload("CASE-01", "SYNTH-01", 1.0, value, "NOMINAL")
 
 
-@pytest.mark.parametrize("value", ["", " ", "abc"])
-def test_invalid_ids_do_not_pass_empty_validation(value):
-    if not value.strip():
-        # The Pydantic schema rejects empty strings; whitespace remains distinguishable.
-        if value == "":
-            with pytest.raises(ValidationError):
-                SystemTaskPayload(task_id=value, target_identifier="DEMO-01", primary_metric=2.0)
+def test_empty_ids_are_rejected():
+    with pytest.raises(ValidationError):
+        SystemTaskPayload(task_id="", target_identifier="DEMO-01", primary_metric=2.0)
 
 
 def test_metadata_identifier_is_blocked():
