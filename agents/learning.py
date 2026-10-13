@@ -1,5 +1,5 @@
 """
-Autonomous Bayesian Calibration & Active Learning Feedback Engine for ecmo-cannulation-va-vv-agent.
+Heuristic in-memory feedback tracker (not Bayesian calibration) for ecmo-cannulation-va-vv-agent.
 """
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel, Field
@@ -12,7 +12,7 @@ class WorkerPerformanceMetric(BaseModel):
     dynamic_weight: float = 1.0
 
 class ActiveLearningEngine:
-    """Continuously refines sub-agent voting weights based on consensus feedback."""
+    """Maintains heuristic weights from supplied feedback; not used for clinical decisions."""
 
     def __init__(self, system_name: str = "Ecmo Cannulation Va Vv Agent"):
         self.system_name = system_name
@@ -31,7 +31,7 @@ class ActiveLearningEngine:
         if was_concordant:
             m.concordant_decisions += 1
         
-        # Update dynamic Bayesian reliability weight
+        # Update a heuristic feedback-derived weight (not a calibrated probability)
         acc = m.concordant_decisions / max(1, m.total_evaluations)
         m.dynamic_weight = round(max(0.2, min(2.0, acc * 1.5)), 3)
 
