@@ -33,7 +33,7 @@ def test_coordinator():
     assert dossier["total_alerts"] == 0
 
     ans = coord.query_assistant("What are the guidelines?")
-    assert "guidelines" in ans or "standards" in ans
+    assert "guideline" in ans.lower() and "no ECMO clinical validation" in ans
 
 
 def test_coordinator_critical():
@@ -51,7 +51,7 @@ def test_cli():
 
 def test_domain_registry():
     from ecmo_sentinel import DomainKnowledgeRegistry
-    assert DomainKnowledgeRegistry.ZERO_PHI_COMPLIANCE is True
+    assert DomainKnowledgeRegistry.ZERO_PHI_COMPLIANCE is False
     assert "PRO" in DomainKnowledgeRegistry.SYSTEM_VERSION
 
 

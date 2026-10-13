@@ -15,7 +15,7 @@ supervisor = SystemSupervisor(model_provider="mock")
 
 app = FastAPI(
     title="Ecmo Cannulation Va Vv Agent API",
-    description="Enterprise Distributed Component Platform (Cardiology & Intensive Care Systems)",
+    description="Synthetic educational demonstration; not validated medical software",
     version="3.0.0-ENTERPRISE",
 )
 
@@ -26,7 +26,7 @@ class ChatRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "HEALTHY", "service": "ecmo-cannulation-va-vv-agent", "domain": "Cardiology & Intensive Care Systems", "standard": "AHA/ACC Guidelines / Surviving Sepsis Campaign", "version": "3.0.0-ENTERPRISE"}
+    return {"status": "HEALTHY", "service": "ecmo-cannulation-va-vv-agent", "domain": "Cardiology & Intensive Care Systems", "standard": "Illustrative rules; not clinically validated", "version": "3.0.0-ENTERPRISE"}
 
 
 @app.get("/metrics")
@@ -62,8 +62,8 @@ def api_chat(req: ChatRequest):
         return {"response": ans}
     except SecurityException as e:
         raise HTTPException(status_code=422, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Unable to process request")
 
 
 @app.get("/api/audit/logs")

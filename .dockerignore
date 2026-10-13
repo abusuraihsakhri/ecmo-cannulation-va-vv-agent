@@ -1,0 +1,21 @@
+# Never include local secrets or credentials in container build contexts
+.env
+.env.*
+!.env.example
+.git
+.github
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.venv
+venv
+dist
+build
+*.egg-info
+*.log
+results.csv
+output.csv
+.coverage
+htmlcov
+.DS_Store
