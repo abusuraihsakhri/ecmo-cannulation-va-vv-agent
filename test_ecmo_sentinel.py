@@ -33,7 +33,7 @@ def test_coordinator():
     assert dossier["total_alerts"] == 0
 
     ans = coord.query_assistant("What are the guidelines?")
-    assert "guidelines" in ans or "standards" in ans
+    assert "guideline" in ans.lower() and "no ECMO clinical validation" in ans
 
 
 def test_coordinator_critical():
