@@ -1,4 +1,4 @@
-name: Ecmo Cannulation Va Vv Engine CI/CD & Security Verification
+name: ECMO synthetic demo CI
 
 on:
   push:
@@ -37,11 +37,11 @@ jobs:
       run: |
         python -m pytest -v
 
-    - name: Security SAST & Zero-PHI Audit
+    - name: Verify in-memory HMAC audit chain
       run: |
         python -c "
         from agents.base import PHIGuard, AuditLogger
         import pytest
         assert AuditLogger.verify_integrity() is True
-        print('Security & Zero-PHI Audit Passed!')
+        print('In-memory HMAC audit chain verified.')
         "
