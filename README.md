@@ -1,179 +1,74 @@
-# ECMO Cannulation Va Vv Agent
+# ECMO VA/VV Educational Rule Explorer
 
-> **Domain:** Cardiovascular Medicine & Hemodynamic Analytics  
-> **Reference Guidelines & Standards:** `AHA/ACC Practice Guidelines & ESC Clinical Standards`
+A Python rules-engine demonstration and static browser exercise for exploring synthetic VA/VV ECMO scenarios. The repository includes several historical prototypes; their generic numeric thresholds are **not calibrated to real ECMO circuit measurements**.
 
-<div align="center">
+**Not for clinical use.** This software does not calculate validated transmembrane pressure drop, recirculation fraction, cannulation eligibility, differential hypoxemia, or patient-specific treatment decisions. Do not submit identifiable patient data.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688.svg?logo=fastapi&logoColor=white)
-![Audit Trail](https://img.shields.io/badge/Audit-HMAC--SHA256_Tamper--Evident-brightgreen.svg)
-![Zero-PHI Guard](https://img.shields.io/badge/Guard-Zero--PHI_Outbound-blue.svg)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)
+## Browser interface
 
-</div>
+Open [web/index.html](web/index.html) in a modern browser. The page compares the basic purposes of VA and VV ECMO and evaluates synthetic, unitless inputs against illustrative software thresholds.
 
----
+- Works offline as static HTML, CSS, and JavaScript; no Python runtime, Pyodide, or server.
+- No external API, model inference, analytics, persistent storage, or fabricated audit signatures.
+- Runs local input validation and can export an example JSON file.
+- No publicly accessible GitHub Pages deployment has been verified. A root redirect is provided for conventional branch-based Pages hosting if Pages is enabled.
 
-## 📖 What It Does
+## Python installation
 
-**ECMO Cannulation Va Vv Agent** is an advanced analytical and computational platform implementing VA/VV ECMO Membrane Pressure Drop & Recirculation Tracker. It provides multi-agent consensus evaluation, cryptographic audit trails, and zero-PHI outbound protection for clinical decision support.
+Requires Python 3.10 or later.
 
----
-
-## ⚙️ Key Capabilities & Algorithmic Modules
-
-### 🔬 Core Algorithmic & Evaluation Engines
-
-- **`Severity`** — dedicated module for severity evaluation and state verification.
-- **`DomainKnowledgeRegistry`**: Enterprise domain rules, guideline matrices, and evidence benchmarks.
-- **`AgentAlert`** — dedicated module for agent alert evaluation and state verification.
-- **`CircuitPressureMonitorAgent`**: Specialized Sub-Agent 1 for ecmo-cannulation-va-vv-agent
-- **`GasExchangeEfficiencyAgent`**: Specialized Sub-Agent 2 for ecmo-cannulation-va-vv-agent
-- **`RecirculationCalculatorAgent`**: Specialized Sub-Agent 3 for ecmo-cannulation-va-vv-agent
-
----
-
-## 💻 CLI Quickstart & Usage
-
-### Installation
 ```bash
-pip install -e .
+python -m pip install -e ".[api,test]"
+python -m pytest -v
 ```
 
-### 1. Run Single Audit
+The default application is a synthetic three-worker rule engine. It has illustrative thresholds (**primary >25**, **secondary >12**), a caller-defined critical flag, and a descriptor string. These have no clinical units or guideline provenance.
+
 ```bash
-python cli.py audit --task-id TASK-001 --target KEY-01 --primary 28.5 --secondary 14.2
+# Main CLI; not a medical evaluation
+ecmo-sentinel audit --task-id DEMO-001 --target SYNTH-01 --primary 28.5 --secondary 14.2
+ecmo-sentinel chat "What does the demo do?"
+ecmo-sentinel batch -i examples.csv -o results.csv
+ecmo-sentinel verify-audit
+
+# Alternatively, from the checked-out repository
+python cli.py audit --task-id DEMO-001 --target SYNTH-01 --primary 28.5 --secondary 14.2
 ```
 
-### 2. Chat with Supervisor
+The root CLI's CSV columns are `task_id,target_identifier,primary_metric,secondary_metric,status_descriptor,is_critical_flag`. Boolean values accept `true`, `1`, or `yes`. Invalid rows are skipped with a warning; output CSV adds severity and audit fields.
+
+The older `ecmo-cannulation-va-vv-engine` console entry point, `python -m ecmo_cannulation_va_vv_agent`, and `python ecmo_sentinel.py` use **different historical example schemas and thresholds**. They are maintained for compatibility and should not be compared as clinically equivalent algorithms.
+
+## Development API
+
 ```bash
-python cli.py chat "What is the system status?"
+uvicorn agents.api:app --host 127.0.0.1 --port 8000
 ```
 
-### 3. Batch Process CSV
+Endpoints: `GET /health`, `POST /api/audit`, `POST /api/chat`, `GET /metrics`, `GET /metrics/prometheus`, and `GET /api/audit/logs`. Interactive OpenAPI documentation is at `/docs`. An alternate API factory exists at `ecmo_cannulation_va_vv_agent.server.create_app` and has a different schema.
+
+The API has **no user authentication or authorization**. Run locally or behind a separately configured access-control boundary; do not expose it directly to the public Internet.
+
+## Privacy and audit limits
+
+The browser exercise processes inputs only within the open tab and exports files on explicit request. The Python service retains evaluated synthetic dossiers and HMAC audit entries **in process memory**; restarting discards them. `AUDIT_SECRET_KEY` can provide a fixed signing key for that process. Without it, the application generates an ephemeral development key and emits a warning. Chain verification checks the HMAC of every entry and all predecessor links. This is not a persistent compliance-grade audit system.
+
+The regex-based identifier filter blocks a limited set of recognizable identifiers, but **does not implement HIPAA Safe Harbor de-identification** and cannot guarantee PHI removal. Do not supply real patient records, names, contact information, or identifiers.
+
+## Container
+
 ```bash
-python cli.py batch -i sample.csv -o results.csv
-```
-
-### 4. Verify Audit Trail
-```bash
-python cli.py verify-audit
-```
-
-### 5. Launch REST API Server
-```bash
-python cli.py serve --host 127.0.0.1 --port 8000
-```
-
-### Parameter Reference
-- `--task-id`: Unique task/case identifier
-- `--target`: Target entity or specimen identifier
-- `--primary`: Primary measurement value (float)
-- `--secondary`: Secondary measurement value (float)
-- `--critical`: Flag for emergency escalation
-- `--status`: Status descriptor (e.g., NOMINAL, DISCORDANT)
-
-### Input Data Schema
-
-| Field | Description | Requirement |
-|:------|:------------|:------------|
-| `case_id` | Parameter / observation metric | Required |
-| `patient_synthetic_id` | Parameter / observation metric | Required |
-| `metric_primary` | Parameter / observation metric | Required |
-| `metric_secondary` | Parameter / observation metric | Required |
-| `is_stat` | Parameter / observation metric | Required |
-| `status_flag` | Parameter / observation metric | Required |
-
----
-
-## 🛡️ Security & Enterprise Architecture
-
-* **Zero-PHI Outbound Interceptor:** Active regex inspection blocking SSNs, MRNs, phone numbers, and patient identifiers.
-* **Tamper-Evident HMAC-SHA256 Audit Trail:** Chained, cryptographically signed logs for every evaluation and state transition.
-* **Air-Gapped LLM Reasoning Adapter:** Agnostic integration for local Ollama instances (`llama3`, `mistral`), Claude 3.5 Sonnet, GPT-4o, and deterministic test mocks.
-* **Active Learning Bayesian Calibration:** Dynamic tracker updating worker reliability weights and monitoring Brier calibration drift.
-* **FastAPI & Prometheus Telemetry:** Exposes OpenAPI 3.1 REST endpoints and operational Prometheus metrics (`/metrics` and `/metrics/prometheus`).
-
-### Security Configuration
-
-Set a strong random key for production:
-```bash
-# Copy the example env file
 cp .env.example .env
-
-# Generate a strong key
-python -c "import secrets; print(secrets.token_hex(32))"
-
-# Edit .env and set AUDIT_SECRET_KEY
+# Replace AUDIT_SECRET_KEY with a strong random value in .env
+docker compose up --build
 ```
 
----
+The container runs the API on port 8000. The environment example is not a usable production secret.
 
-## 🧪 Testing & Verification
+## Technology and tests
 
-Run the automated test suite:
+Python, Pydantic 2, FastAPI (optional API extra), Uvicorn, pytest; standalone HTML/CSS/JavaScript. CI installs the Python package, checks dependency consistency, compiles source, and runs tests on Python 3.10–3.12. Browser exercise is compatible with modern desktop and mobile browsers; automated end-to-end browser deployment verification is not yet established.
 
-```bash
-pytest -v
-```
+## License
 
-Execute high-throughput batch simulation benchmarks:
-
-```bash
-python simulator.py 1000
-```
-
----
-
-## 🐳 Container Deployment
-
-### Docker
-```bash
-docker build -t ecmo-cannulation-va-vv-agent .
-docker run -p 8000:8000 -e AUDIT_SECRET_KEY=your-secret-key ecmo-cannulation-va-vv-agent
-```
-
-### Docker Compose
-```bash
-# Copy and configure environment
-cp .env.example .env
-# Edit .env with your AUDIT_SECRET_KEY
-
-# Launch
-docker-compose up -d
-```
-
----
-
-## 📁 Project Structure
-
-```
-ecmo-cannulation-va-vv-agent/
-├── agents/                    # Core agent package
-│   ├── api.py                 # FastAPI REST server
-│   ├── base.py                # Security, PHI guard, audit trail
-│   ├── models.py              # Pydantic data models
-│   ├── supervisor.py          # Multi-agent orchestrator
-│   ├── workers.py             # Specialized evaluation workers
-│   ├── metrics.py             # Prometheus metrics collector
-│   ├── learning.py            # Bayesian calibration engine
-│   ├── llm_factory.py         # LLM provider factory
-│   └── streamer.py            # WebSocket telemetry broadcaster
-├── ecmo_cannulation_va_vv_agent/  # Clinical agent package
-│   ├── agents.py              # Clinical coordinator & sub-agents
-│   ├── engine.py              # Clinical algorithmic engine
-│   ├── models.py              # Clinical data models
-│   ├── server.py              # FastAPI server factory
-│   └── cli.py                 # Clinical CLI
-├── tests/                     # Test suite
-├── cli.py                     # Main CLI entry point
-├── ecmo_sentinel.py           # Standalone ECMO sentinel module
-├── simulator.py               # High-throughput simulation
-├── enrichment.py              # Domain enrichment engines
-├── web/index.html             # Operations console
-├── Dockerfile                 # Container build
-├── docker-compose.yml         # Container orchestration
-└── pyproject.toml             # Project configuration
-```
+[MIT](LICENSE).
