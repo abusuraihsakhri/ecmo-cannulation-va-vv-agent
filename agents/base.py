@@ -25,7 +25,7 @@ PHI_PATTERNS = [
 
 
 class SecurityException(Exception):
-    """Raised when outbound data violates HIPAA Safe Harbor or contains raw PHI."""
+    """Raised when a limited identifier pattern is detected in input."""
     pass
 
 
@@ -62,7 +62,7 @@ class AuditTrail:
         if not resolved_key:
             import warnings
             warnings.warn(
-                "AUDIT_SECRET_KEY not set. Using development-only fallback. "
+                "AUDIT_SECRET_KEY not set. Generated ephemeral development key. "
                 "Set AUDIT_SECRET_KEY env var in production.",
                 RuntimeWarning,
                 stacklevel=2,
