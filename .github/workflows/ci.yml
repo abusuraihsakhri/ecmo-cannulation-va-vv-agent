@@ -24,8 +24,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -e ".[api,test]"
+        python -m pip install -e ".[api,test]" build
         python -m pip check
+
+    - name: Build package
+      run: python -m build
 
     - name: Compile source
       run: python -m compileall -q agents ecmo_cannulation_va_vv_agent cli.py ecmo_sentinel.py enrichment.py
