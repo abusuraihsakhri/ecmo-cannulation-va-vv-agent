@@ -93,7 +93,7 @@ class ECMOCoordinator:
             "stat_critical_alerts": stat_count,
             "warning_alerts": warn_count,
             "alerts": [a.to_dict() for a in all_alerts],
-            "guideline_standard": "Surviving Sepsis Campaign 2021 & Sepsis-3",
+            "guideline_standard": "illustrative rules (not clinically validated)",
             "consensus_summary": f"Multi-agent supervision completed across 3 sub-agents with status [{status.value}].",
         }
 
@@ -105,6 +105,6 @@ class ECMOCoordinator:
         if "status" in q or "summary" in q:
             return f"ECMO-Sentinel: Extracorporeal Membrane Oxygenation Flow & Cannulation Supervisor currently tracking {len(self.case_registry)} cases in on-premises memory."
         elif "guideline" in q or "standard" in q:
-            return "Active clinical surveillance operates under Surviving Sepsis Campaign 2021 & Sepsis-3 validated protocols."
+            return "This program uses demonstration thresholds and has not been clinically validated."
         else:
-            return f"ECMO-Sentinel: Extracorporeal Membrane Oxygenation Flow & Cannulation Supervisor executive agent online. Zero-PHI air-gapped monitoring active."
+            return "ECMO-Sentinel demonstration is available; no PHI-free guarantee or clinical monitoring is provided."
