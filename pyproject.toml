@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ecmo-cannulation-va-vv-engine"
+name = "ecmo-cannulation-va-vv-agent"
 version = "2.0.0"
 description = "ECMO-Sentinel: Extracorporeal Membrane Oxygenation Flow & Cannulation Supervisor"
 readme = "README.md"
@@ -13,15 +13,26 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Medical Science Apps",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-requires-python = ">=3.9"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = ["pydantic>=2,<3"]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.110,<1", "uvicorn>=0.30,<1"]
+test = ["pytest>=8,<10", "httpx>=0.27,<1"]
 
 [project.scripts]
-ecmo-cannulation-va-vv-engine = "ecmo_cannulation_va_vv_agent.cli:main"
+ecmo-sentinel = "cli:main"
+ecmo-cannulation-va-vv-agent = "ecmo_cannulation_va_vv_agent.cli:main"
+
+[tool.setuptools]
+py-modules = ["cli", "ecmo_sentinel", "enrichment", "simulator"]
+
+[tool.setuptools.packages.find]
+include = ["agents*", "ecmo_cannulation_va_vv_agent*"]
 
 [project.urls]
-Homepage = "https://github.com/abusuraihsakhri/ecmo-cannulation-va-vv-engine"
-Repository = "https://github.com/abusuraihsakhri/ecmo-cannulation-va-vv-engine.git"
+Homepage = "https://github.com/abusuraihsakhri/ecmo-cannulation-va-vv-agent"
+Repository = "https://github.com/abusuraihsakhri/ecmo-cannulation-va-vv-agent.git"
