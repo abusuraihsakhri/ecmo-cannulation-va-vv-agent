@@ -1,7 +1,7 @@
 """
 Pydantic v2 schemas and data definitions for Ecmo Cannulation Va Vv Agent.
 Domain: Cardiology & Intensive Care Systems
-Standard: AHA/ACC Guidelines / Surviving Sepsis Campaign
+Standard: Illustrative rules; not clinically validated
 """
 import datetime
 from enum import Enum
@@ -22,11 +22,11 @@ class SystemIntegrityStatus(str, Enum):
 
 
 class SystemTaskPayload(BaseModel):
-    task_id: str = Field(..., description="Unique task / case identifier")
-    target_identifier: str = Field(..., description="Entity, patient key, or genomic/cryptographic target")
-    primary_metric: float = Field(..., description="Primary domain measurement or score")
-    secondary_metric: float = Field(default=0.0, description="Secondary kinetic or confidence score")
-    status_descriptor: str = Field(default="NOMINAL", description="Status code or phenotype descriptor")
+    task_id: str = Field(..., min_length=1, max_length=128, description="Synthetic task identifier")
+    target_identifier: str = Field(..., min_length=1, max_length=128, description="Synthetic target identifier; do not use real patient data")
+    primary_metric: float = Field(..., allow_inf_nan=False, description="Unitless illustrative primary input")
+    secondary_metric: float = Field(default=0.0, allow_inf_nan=False, description="Unitless illustrative secondary input")
+    status_descriptor: str = Field(default="NOMINAL", max_length=128, description="Synthetic status descriptor")
     is_critical_flag: bool = Field(default=False, description="Emergency escalation or high priority trigger")
     attributes: Dict[str, Any] = Field(default_factory=dict, description="Metadata key-value pairs")
     timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
@@ -39,7 +39,7 @@ class AgentAlert(BaseModel):
     summary: str
     technical_details: str
     actionable_remediation: str
-    standard_reference: str = "AHA/ACC Guidelines / Surviving Sepsis Campaign"
+    standard_reference: str = "Illustrative rules; not clinically validated"
     timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
@@ -57,7 +57,7 @@ class ConsensusDossier(BaseModel):
     total_alerts: int
     critical_alerts_count: int
     alerts: List[AgentAlert]
-    standard_reference: str = "AHA/ACC Guidelines / Surviving Sepsis Campaign"
+    standard_reference: str = "Illustrative rules; not clinically validated"
     consensus_summary: str
     audit_hash: str
     timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
