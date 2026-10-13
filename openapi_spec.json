@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Ecmo Cannulation Va Vv Engine API",
-    "description": "Enterprise Distributed Component Platform (Clinical & Cryptographic AI) adhering to CAP / CLSI / NIST Standards.",
+    "description": "Illustrative synthetic-input rules API; not clinically validated or approved for patient care.",
     "version": "3.0.0-ENTERPRISE",
     "contact": {
       "name": "Dr. Abu Suraih Sakhri",
@@ -15,14 +15,14 @@
         "summary": "Health and metadata check",
         "responses": {
           "200": {
-            "description": "System optimal"
+            "description": "Service process reachable"
           }
         }
       }
     },
     "/metrics": {
       "get": {
-        "summary": "Prometheus operational metrics",
+        "summary": "JSON process counters; Prometheus text available at /metrics/prometheus",
         "responses": {
           "200": {
             "description": "Prometheus text metrics"
@@ -69,14 +69,14 @@
         },
         "responses": {
           "200": {
-            "description": "Consensus dossier with HMAC signature"
+            "description": "Synthetic test dossier with an in-memory HMAC audit reference"
           }
         }
       }
     },
     "/api/chat": {
       "post": {
-        "summary": "Air-gapped supervisory conversational assistant",
+        "summary": "Deterministic mock supervisor response",
         "requestBody": {
           "content": {
             "application/json": {

@@ -31,7 +31,7 @@ class Severity(str, Enum):
 # ==============================================================================
 
 class DomainKnowledgeRegistry:
-    """Enterprise domain rules, guideline matrices, and evidence benchmarks."""
+    """Illustrative configuration flags; no validated guideline matrix is provided."""
     SYSTEM_VERSION = "2.0.0-PRO-CLINICAL"
     ZERO_PHI_COMPLIANCE = False
     HIPAA_SAFE_HARBOR = "NOT_IMPLEMENTED"
