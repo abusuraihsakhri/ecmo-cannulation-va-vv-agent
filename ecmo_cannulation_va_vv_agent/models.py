@@ -1,9 +1,10 @@
 """
 Clinical Data Models & Enums for ECMO-Sentinel: Extracorporeal Membrane Oxygenation Flow & Cannulation Supervisor.
 Domain: Critical Care
-Standard: Surviving Sepsis Campaign 2021 & Sepsis-3
+Standard: illustrative rules (not clinically validated)
 """
 import datetime
+import math
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Any
@@ -34,6 +35,10 @@ class ClinicalCasePayload:
     biomarkers: Dict[str, Any] = field(default_factory=dict)
     timestamp: str = field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
 
+    def __post_init__(self):
+        if not all(math.isfinite(v) for v in (self.primary_metric, self.secondary_metric)):
+            raise ValueError("Metrics must be finite numbers")
+
 
 @dataclass
 class AgentAlert:
@@ -43,7 +48,7 @@ class AgentAlert:
     title: str
     clinical_finding: str
     actionable_recommendation: str
-    guideline_citation: str = "Surviving Sepsis Campaign 2021 & Sepsis-3"
+    guideline_citation: str = "illustrative rules (not clinically validated)"
     timestamp: str = field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
