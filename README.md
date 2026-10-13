@@ -1,5 +1,7 @@
 # ECMO VA/VV Educational Rule Explorer
 
+### [Open the Live Application →](https://abusuraihsakhri.github.io/ecmo-cannulation-va-vv-agent/)
+
 A Python rules-engine demonstration and static browser exercise for exploring synthetic VA/VV ECMO scenarios. The repository includes several historical prototypes; their generic numeric thresholds are **not calibrated to real ECMO circuit measurements**.
 
 **Not for clinical use.** This software does not calculate validated transmembrane pressure drop, recirculation fraction, cannulation eligibility, differential hypoxemia, or patient-specific treatment decisions. Do not submit identifiable patient data.
@@ -11,7 +13,7 @@ Open [web/index.html](web/index.html) in a modern browser. The page compares the
 - Works offline as static HTML, CSS, and JavaScript; no Python runtime, Pyodide, or server.
 - No external API, model inference, analytics, persistent storage, or fabricated audit signatures.
 - Runs local input validation and can export an example JSON file.
-- No publicly accessible GitHub Pages deployment has been verified. A root redirect is provided for conventional branch-based Pages hosting if Pages is enabled.
+- Published as a GitHub Pages static application by the repository's deployment workflow; it does not expose the Python REST API. The initial GitHub Actions deployment completed successfully.
 
 ## Python installation
 
