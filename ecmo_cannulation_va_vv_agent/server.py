@@ -14,7 +14,7 @@ def create_app():
 
         app = FastAPI(
             title="ECMO-Sentinel: Extracorporeal Membrane Oxygenation Flow & Cannulation Supervisor",
-            description="Surveils VA/VV ECMO circuits for transmembrane pressure drops (clotting), recirculation fraction, sweep gas exchange, and Harlequin syndrome.",
+            description="Illustrative synthetic-input rule demonstration; no ECMO physiological calculations or clinical validation.",
             version="2.0.0-PRO",
         )
 
