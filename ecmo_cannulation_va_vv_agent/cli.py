@@ -11,6 +11,17 @@ from .agents import ECMOCoordinator
 coordinator = ECMOCoordinator()
 
 
+def parse_boolean(value):
+    if isinstance(value, bool):
+        return value
+    normalized = str(value).strip().lower()
+    if normalized in ("true", "1", "yes"):
+        return True
+    if normalized in ("false", "0", "no", ""):
+        return False
+    raise ValueError("Invalid boolean flag; expected true/false, 1/0, or yes/no")
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="ecmo-cannulation-va-vv-agent", description="ECMO-Sentinel: Extracorporeal Membrane Oxygenation Flow & Cannulation Supervisor")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -51,7 +62,7 @@ def main(argv=None):
         dossier = coordinator.process_case(case)
         print("=" * 80)
         print(f"  ECMO-SENTINEL: EXTRACORPOREAL MEMBRANE OXYGENATION FLOW & CANNULATION SUPERVISOR")
-        print(f"  Domain: Critical Care | Standard: Surviving Sepsis Campaign 2021 & Sepsis-3")
+        print(f"  Domain: Critical Care | Standard: illustrative rules (not clinically validated)")
         print(f"  Case: {dossier['case_id']} | Status: [{dossier['overall_status']}] | Total Alerts: {dossier['total_alerts']}")
         print("=" * 80)
         for a in dossier["alerts"]:
@@ -82,7 +93,7 @@ def main(argv=None):
                 primary_metric=float(r.get("metric_primary", r.get("primary_metric", 15.0))),
                 secondary_metric=float(r.get("metric_secondary", r.get("secondary_metric", 5.0))),
                 status_flag=r.get("status_flag", r.get("status_text", "NORMAL")),
-                is_stat=bool(r.get("is_stat", r.get("critical_flag", False))),
+                is_stat=parse_boolean(r.get("is_stat", r.get("critical_flag", False))),
             )
             dossier = coordinator.process_case(case)
             row_dict = dict(r)
